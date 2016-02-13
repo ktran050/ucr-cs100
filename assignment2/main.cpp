@@ -52,7 +52,11 @@ void parse(std::string& rawCmd, std::vector<Command> cmdList){
 	Command tempCommand;	// Command object to be pushed into the vector
 
 	for(int i=0; i<rawCmd.size()-1; i++){		// loops through the whole string
+	std::cout << "stds are bad"  << std::endl;
+std::cout <<  i << std::endl;
+
 		if(rawCmd.at(i) != ' '){				// if the char at curr. index is not a space
+		//std::cout << "not space" << std::endl;
 			if(rawCmd.at(i) == ';'){			// if the char is a semicolon
 				tempCommand.connect = rawCmd.at(i);	// save the connector as ;
 				cmdList.push_back(tempCommand);	// save the command
