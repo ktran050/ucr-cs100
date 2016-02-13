@@ -47,16 +47,12 @@ class connector{
 // Different connectors require different implementations
 // Implementations can be added or removed here
 
-void parse(std::string& rawCmd, std::vector<Command> cmdList){
+void parse(std::string& rawCmd, std::vector<Command>& cmdList){
 	std::string tempString;		// string to build cmd/arg as they come in
 	Command tempCommand;	// Command object to be pushed into the vector
 
-	for(int i=0; i<rawCmd.size()-1; i++){		// loops through the whole string
-	std::cout << "stds are bad"  << std::endl;
-std::cout <<  i << std::endl;
-
+	for(int i=0; i<rawCmd.size(); i++){		// loops through the whole string
 		if(rawCmd.at(i) != ' '){				// if the char at curr. index is not a space
-		//std::cout << "not space" << std::endl;
 			if(rawCmd.at(i) == ';'){			// if the char is a semicolon
 				tempCommand.connect = rawCmd.at(i);	// save the connector as ;
 				cmdList.push_back(tempCommand);	// save the command
@@ -96,19 +92,28 @@ std::cout <<  i << std::endl;
 					tempCommand.cmd = tempString;	// then set cmd to tempString
 					tempString.clear();			// clear the tempString
 				}
-				else{							// if there is a value in cmd then it must be an arg
+				else{// if there is a value in cmd then it must be an arg
+					std::cout << "arg added" << std::endl;
 					tempCommand.arg.push_back(tempString); // add it to the list of arg
 					tempString.clear();			// reset the temp string
 				}
 			}
 		}	// else the space gets ignored
 	}
+	if(tempString.size() != 0){		// if tempString isn't empty
+		if(tempCommand.cmd.size() == 0){	// if tempCommand cmd is empty
+			tempCommand.cmd = tempString;	// set tempCommand cmd to tempString
+		}
+		else{
+			tempCommand.arg.push_back(tempString); // else its an argument and add it to the arg list
+		}
+	}
+	cmdList.push_back(tempCommand); // the string ended and whaever's left is pushed back
 }
 
 void testMain1(std::vector<Command> cmdList){
-	for(int i=0; i<cmdList.size()-1; ++i){
+	for(int i=0; i<cmdList.size(); ++i){
 		std::cout << "Command object #: " << i+1 << std::endl;
-
 		std::cout << "Command: ";
 		if(cmdList.at(i).cmd.size() != 0){
 			std::cout << cmdList.at(i).cmd << std::endl;
@@ -119,15 +124,18 @@ void testMain1(std::vector<Command> cmdList){
 
 		std::cout << "Arguments list:" << std::endl;
 		if(cmdList.at(i).arg.size() != 0){
-			for(int o=0; o<cmdList.at(i).arg.size()-1; ++o){
-				std::cout << "\tArg: ";
+			for(int o=0; o<cmdList.at(i).arg.size(); ++o){
+				std::cout << "Arg: ";
 				if(cmdList.at(i).arg.at(o).size() != 0){
 					std::cout << cmdList.at(i).arg.at(o) << std::endl;
 				}
 				else{
-					std::cout << "\tNo Arg" << std::endl;
+					std::cout << "No Arg" << std::endl;
 				}
 			}
+		}
+		else{
+			std::cout << "No arguments" << std::endl;
 		}
 
 		std::cout << "Ran is: ";
@@ -153,8 +161,6 @@ int main(){
 
 	std::cout << "$ ";			// Prompt user
 	std::getline(std::cin, rawCmd); // Receive command line
-
-	std::cout << "rawCmd " << rawCmd << " size " << rawCmd.size() << std:: endl;
 
 	parse(rawCmd, cmdList);		// Parse the command line
 
